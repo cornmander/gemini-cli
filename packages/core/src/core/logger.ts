@@ -107,7 +107,10 @@ export class Logger {
       }
       this.logs = await this._readLogFile();
       if (!fileExisted && this.logs.length === 0) {
-        await fs.writeFile(this.logFilePath, '[]', 'utf-8');
+        await fs.writeFile(this.logFilePath, '[]', {
+          encoding: 'utf-8',
+          mode: 0o600,
+        });
       }
       const sessionLogs = this.logs.filter(
         (entry) => entry.sessionId === this.sessionId,
@@ -179,7 +182,7 @@ export class Logger {
       await fs.writeFile(
         this.logFilePath,
         JSON.stringify(currentLogsOnDisk, null, 2),
-        'utf-8',
+        { encoding: 'utf-8', mode: 0o600 },
       );
       this.logs = currentLogsOnDisk;
       return entryToAppend; // Return the successfully appended entry
@@ -255,7 +258,10 @@ export class Logger {
     }
     const path = this._checkpointPath(tag);
     try {
-      await fs.writeFile(path, JSON.stringify(conversation, null, 2), 'utf-8');
+      await fs.writeFile(path, JSON.stringify(conversation, null, 2), {
+        encoding: 'utf-8',
+        mode: 0o600,
+      });
     } catch (error) {
       console.error('Error writing to checkpoint file:', error);
     }
